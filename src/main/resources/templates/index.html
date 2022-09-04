@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<!--<head th:replace="parts/header :: head"/>-->
+<head>
+    <title>Конвертер валют</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/js/alertify/css/alertify.css">
+    <link rel="stylesheet" href="/js/alertify/css/themes/default.css">
+    <script src="/js/alertify/alertify.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
+</head>
+<body>
+
+<!--<header th:replace="parts/landing-header :: header"/>-->
+<p><a href="/logout"><i class="fas fa-sign-out-alt"></i> Выйти</a></p>
+<h1>Конвертер</h1>
+
+<div>
+    <div>
+        <!-- TODO: При выборе валюты скрывать выбранную валюту в другом комбо-боксе -->
+        <div>
+            <select id="curr1">
+               <option
+                    th:each="code : ${currencies}"
+                    th:value="${code.getCharCode()}"
+                    th:text="${code.getCharCode() + ' (' + code.getName()} + ')'"></option>
+            </select>
+            <select id="curr2">
+                <option
+                    th:each="code : ${currencies}"
+                    th:value="${code.getCharCode()}"
+                    th:text="${code.getCharCode() + ' (' + code.getName() + ')'}"></option>
+            </select>
+        </div>
+        <div>
+            <input id="tf_from" type="text"/>
+            <input id="tf_to" type="text"/>
+        </div>
+    </div>
+    <button class="btn" onclick="conv();"><i class="fas fa-calculator"></i> Конвертировать</button>
+</div>
+
+<script>
+
+    var cur1 = document.getElementById("curr1");
+    var cur2 = document.getElementById("curr2");
+    var from = document.getElementById("tf_from");
+    var to   = document.getElementById("tf_to");
+
+    function conv(){
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("Get", "/api/convert?from=" + cur1.value + "&to=" + cur2.value + "&sum=" + from.value, true, "admin", "admin");
+        xhr.send();
+
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === 4){
+                if (xhr.status === 200) {
+                    to.value = xhr.response;
+                } else {
+                    if(xhr.response.message){
+                        alertify.notify(
+                            errorText + "ERROR " + xhr.status + "\n\nResponse:\n\n" + xhr.response.message,
+                            'error'
+                        );
+                    }
+                    console.log(xhr.response)
+                }
+            }
+        };
+    }
+</script>
+
+<p><a href="/app/history/"><i class="fas fa-history"></i> История</a></p>
+
+</body>
+</html>

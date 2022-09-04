@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<!--<head th:replace="parts/header :: head"/>-->
+<head>
+    <title>Конвертер валют</title>
+    <script src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!--<header th:replace="parts/landing-header :: header"/>-->
+<p><a href="/app"><i class="fas fa-arrow-left"></i> Назад в конвертер</a></p>
+<h1>История</h1>
+<form>
+    <label for="date"></label>
+    <input id="date" type="date"/>
+
+    <label for="from"></label>
+    <select id="from">
+        <option th:each="f : ${from}" th:value="${f}" th:text="${f}"></option>
+    </select>
+    <label for="to"></label>
+    <select id="to">
+        <option th:each="t : ${to}" th:value="${t}" th:text="${t}"></option>
+    </select>
+</form>
+<style>
+    table {
+        margin: 10px 0;
+        border-collapse: collapse;
+    }
+    table tr th{
+        background-color: #ccc;
+    }
+    table tr:nth-child(odd){
+        background-color: #eee;
+    }
+    table td {
+        padding: 8px;
+    }
+    table td,
+    table th {
+        border: 1px solid black;
+        padding: 5px;
+    }
+</style>
+<table id="table">
+    <tr>
+        <th>Исходная валюта</th>
+        <th>Целевая валюта</th>
+        <th>Исходная сумма</th>
+        <th>Получаемая сумма</th>
+        <th>Дата</th>
+    </tr>
+    <tr th:each="h : ${history}" >
+        <td th:text="${h.getFrom()}"></td>
+        <td th:text="${h.getTo()}"></td>
+        <td th:text="${h.getValue_from()}"></td>
+        <td th:text="${h.getValue_to()}"></td>
+        <td th:text="${h.getDate().getDate() + '-' + (h.getDate().getMonth() + 1) + '-' + (h.getDate().getYear() + 1900)}"></td>
+    </tr>
+</table>
+<button class="btn" onclick="find()"><i class="fas fa-search"></i> Поиск</button>
+<script>
+    var date = document.getElementById("date");
+
+    var from = document.getElementById("from");
+    var to = document.getElementById("to");
+
+    var table = document.getElementById("table");
+
+    window.onload = function() {
+        date.valueAsDate = new Date();
+    };
+
+    function find(){
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("Get", "http://localhost/api/history?date=" + date.value + "&from=" + from.value + "&to=" + to.value, true, "admin", "admin");
+        xhr.responseType = 'json';
+        xhr.send();
+
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === 4){
+                if (xhr.status === 200) {
+                    //Clearing table
+                    document.querySelectorAll("tr>td").forEach(function(i){
+                        i.remove();
+                    });
+
+                    //Getting response
+                    var resp = xhr.response;
+                    console.log(resp);
+
+                    // Filling table
+                    if(resp){
+                        for (var j in resp){
+                            var date = resp[j]["date"];
+                            table.innerHTML +=
+                                `<td>${resp[j]["from"]}</td><td>${resp[j]["to"]}</td><td>${resp[j]["value_from"]}</td><td>${resp[j]["value_to"]}</td><td>${date.split('T')[0].split('-').reverse().join('-')}</td>`;
+                        }
+                    }
+                } else {
+                    if(xhr.response.message){
+                        alertify.notify(
+                            errorText + "ERROR " + xhr.status + "\n\nResponse:\n\n" + xhr.response.message,
+                            'error'
+                        );
+                    }
+                    console.log(xhr.response)
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Авторизация</title>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/js/alertify/css/themes/default.css">
+
+    <link rel="stylesheet" href="/js/alertify/css/alertify.rtl.css">
+    <link rel="stylesheet" href="/js/alertify/css/alertify.css">
+    <script src="/js/alertify/alertify.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f3f3f4;
+            color: #4d4d4e;
+            text-align: center;
+        }
+
+        h1{
+            font-size: 42px;
+        }
+
+        .form-signin {
+            max-width: 450px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .btn {
+            height: 40px;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 6px;
+            color: #3a3a3b;
+        }
+
+        .form-signin input.form-control , .btn {
+            margin: 8px 0;
+            width: 280px;
+            border-color: #878788;
+        }
+
+    </style>
+</head>
+
+<body class="text-center">
+    <form class="form-signin" th:action="@{/login}" method="POST">
+        <h1>Конвертер валют</h1>
+        <div th:if="${param.error}">
+            <script>
+                alertify.error("Неправильный \"Логин\" либо \"Пароль\"","Error");
+            </script>
+        </div>
+        <div th:if="${param.logout}">
+            <div class="alert alert-info">
+                You have been logged out.
+            </div>
+        </div>
+
+        <input class="form-control" name="username" type="text"  placeholder="Логин" required="true" autofocus="true">
+        <input class="form-control" name="password" type="password"  placeholder="Пароль" required="true">
+        <input type="hidden" name="_csrf">
+        <button class="btn" type="submit">Войти</button>
+
+    </form>
+</body>
+</html>

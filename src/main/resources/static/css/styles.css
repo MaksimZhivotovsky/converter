@@ -1,0 +1,27 @@
+body {
+    background: #f3f3f4;
+    color: #3a3a3b;
+}
+
+select, input, button{
+    min-width: 220px;
+    height: 32px;
+    margin: 8px 4px;
+    padding: 4px;
+    border: 2px solid #878788;
+    background: #fdfdfe;
+    color: #3a3a3b;
+    outline: 0;
+}
+
+select:active,
+input:active{
+    border-radius: 0 !important;
+}
+
+button {
+    height: 40px;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 5px;
+}

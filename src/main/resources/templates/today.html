@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<!--<head th:replace="parts/header :: head"/>-->
+<head>
+    <title>Конвертер валют</title>
+    <script src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!--<header th:replace="parts/landing-header :: header"/>-->
+<p><a href="/app"><i class="fas fa-arrow-left"></i> Назад в конвертер</a></p>
+<h1>Курс на сегодня</h1>
+<style>
+    table {
+        margin: 10px 0;
+        border-collapse: collapse;
+    }
+    table tr th{
+        background-color: #ccc;
+    }
+    table tr:nth-child(odd){
+        background-color: #eee;
+    }
+    table td {
+        padding: 8px;
+    }
+    table td,
+    table th {
+        border: 1px solid black;
+    }
+</style>
+<table>
+    <!--
+    private Integer id;
+	private String ident;
+	private int numCode;
+	private String charCode;
+	private int nominal;
+	private String name;
+	private BigDecimal value;
+	private Date date;
+-->
+    <tr>
+        <th>ID</th>
+        <th>Числовой код</th>
+        <th>Символьный код</th>
+        <th>Номинал</th>
+        <th>Название</th>
+        <th>Курс</th>
+        <th>Дата</th>
+    </tr>
+    <tr th:each="c : ${currencies}">
+        <td th:text="${c.getIdent()}"></td>
+        <td th:text="${c.getNumCode()}"></td>
+        <td th:text="${c.getCharCode()}"></td>
+        <td th:text="${c.getNominal()}"></td>
+        <td th:text="${c.getName()}"></td>
+        <td th:text="${c.getValue()}"></td>
+        <td th:text="${c.getDate().getDate() + '-' + (c.getDate().getMonth() + 1) + '-' + (c.getDate().getYear() + 1900)}"></td>
+    </tr>
+</table>
+<button class="btn" type="submit"><i class="fas fa-search"></i> Поиск</button>
+<!--<footer th:replace="parts/footer :: footer"/>-->
+</body>
+</html>
